@@ -23,6 +23,13 @@ module.exports = {
         'cd android && ./gradlew assembleDebug assembleAndroidTest -DtestBuildType=debug',
       reversePorts: [8081],
     },
+    // Release = JS bundle embedded in the APK -> no Metro needed (ideal for CI).
+    'android.release': {
+      type: 'android.apk',
+      binaryPath: 'android/app/build/outputs/apk/release/app-release.apk',
+      build:
+        'cd android && ./gradlew assembleRelease assembleAndroidTest -DtestBuildType=release',
+    },
   },
   devices: {
     simulator: {
@@ -46,6 +53,10 @@ module.exports = {
     'android.emu.debug': {
       device: 'emulator',
       app: 'android.debug',
+    },
+    'android.emu.release': {
+      device: 'emulator',
+      app: 'android.release',
     },
   },
 };
