@@ -9,12 +9,18 @@ on:
     branches: [main]
     paths:
       - 'apps/mobile/**'
+      - '.github/workflows/mobile-e2e.yml'
+
+env:
+  # Run JavaScript actions (checkout, setup-node, setup-java, cache,
+  # upload-artifact…) on the Node 24 runtime — silences the deprecation warnings.
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
   detox-android:
     name: Detox — Android emulator (Gherkin FR + EN)
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 45
     defaults:
       run:
         working-directory: apps/mobile
@@ -28,6 +34,7 @@ jobs:
             | sudo tee /etc/udev/rules.d/99-kvm4all.rules
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
+          ls -l /dev/kvm
 
       - uses: actions/setup-node@v4
         with:
@@ -44,7 +51,23 @@ jobs:
       - name: Build Detox (Android)
         run: npx detox build --configuration android.emu.debug
 
-      - name: Run Detox on emulator (starts Metro)
+      # The emulator OOMs if the Gradle daemons keep holding RAM — free it first.
+      - name: Free memory before the emulator
+        run: |
+          (cd android && ./gradlew --stop) || true
+          free -h
+
+      - name: AVD snapshot cache
+        uses: actions/cache@v4
+        id: avd-cache
+        with:
+          path: |
+            ~/.android/avd/*
+            ~/.android/adb*
+          key: avd-pixel7-api34-v1
+
+      - name: Create AVD snapshot (on cache miss)
+        if: steps.avd-cache.outputs.cache-hit != 'true'
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 34
@@ -52,12 +75,34 @@ jobs:
           arch: x86_64
           profile: pixel_7
           avd-name: Pixel_7_API_34
-          force-avd-creation: true
-          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim
+          force-avd-creation: false
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -no-snapshot-load
+          disable-animations: false
+          script: echo "AVD snapshot created."
+
+      - name: Run Detox (Gherkin FR + EN)
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          target: google_apis
+          arch: x86_64
+          profile: pixel_7
+          avd-name: Pixel_7_API_34
+          force-avd-creation: false
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -no-snapshot-save
           disable-animations: true
           working-directory: apps/mobile
           script: |
+            # Debug build loads JS from Metro — start it and wait until ready.
             npx react-native start &
+            echo "Waiting for Metro on 8081…"
+            for i in $(seq 1 60); do
+              if curl -sf http://localhost:8081/status | grep -q packager-status; then
+                echo "Metro ready"; break
+              fi
+              sleep 2
+            done
+            adb reverse tcp:8081 tcp:8081 || true
             npx detox test --configuration android.emu.debug --headless --cleanup
 
       - name: Upload Detox artifacts
