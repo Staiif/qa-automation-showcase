@@ -6,11 +6,6 @@ on:
   pull_request:
   workflow_dispatch:
 
-env:
-  # Run JavaScript actions (checkout, setup-node, upload-artifact…) on the
-  # Node 24 runtime — silences the Node 20 deprecation warnings.
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-
 jobs:
   playwright:
     name: Playwright — ${{ matrix.browser }}
@@ -22,9 +17,9 @@ jobs:
         browser: [chromium, firefox, webkit]
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: 24
           cache: npm
@@ -46,8 +41,8 @@ jobs:
         run: npx playwright test --project=${{ matrix.browser }}
 
       - name: Upload report
-        if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@v4
+        if: failure()
+        uses: actions/upload-artifact@v5
         with:
           name: playwright-report-${{ matrix.browser }}
           path: tests/playwright/playwright-report/
@@ -59,9 +54,9 @@ jobs:
     timeout-minutes: 20
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: 24
           cache: npm
@@ -81,8 +76,8 @@ jobs:
         run: npx bddgen && npx playwright test --project=bdd
 
       - name: Upload report
-        if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@v4
+        if: failure()
+        uses: actions/upload-artifact@v5
         with:
           name: playwright-report-bdd
           path: tests/playwright/playwright-report/
