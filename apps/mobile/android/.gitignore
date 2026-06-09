@@ -1,0 +1,10 @@
+# Android / Gradle
+build/
+.gradle/
+local.properties
+*.iml
+*.keystore
+!debug.keystore
+.cxx/
+*.hprof
+.kotlin/

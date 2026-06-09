@@ -1,0 +1,38 @@
+# dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# builds
+dist/
+build/
+apps/web/dist/
+
+# Playwright
+test-results/
+playwright-report/
+playwright/.cache/
+blob-report/
+
+# playwright-bdd generated specs
+.features-gen/
+
+# generated reports / living documentation
+tests/playwright/reports/
+docs/living-documentation.html
+
+# Detox / React Native
+apps/mobile/android/app/build/
+apps/mobile/ios/build/
+apps/mobile/ios/Pods/
+*.keystore
+artifacts/
+
+# env & local
+.env
+.env.local
+*.log
+.DS_Store
+.idea/
+.vscode/
+.claude/

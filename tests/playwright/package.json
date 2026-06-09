@@ -1,0 +1,22 @@
+{
+  "name": "@taskly/playwright",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "bdd:gen": "bddgen",
+    "test": "bddgen && playwright test",
+    "test:ui": "bddgen && playwright test --ui",
+    "test:headed": "bddgen && playwright test --headed",
+    "test:bdd": "bddgen && playwright test --project=bdd",
+    "report": "playwright show-report",
+    "codegen": "playwright codegen http://localhost:4173"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "4.11.3",
+    "@playwright/test": "1.60.0",
+    "@types/node": "22.19.20",
+    "dotenv": "16.6.1",
+    "playwright-bdd": "9.0.0"
+  }
+}

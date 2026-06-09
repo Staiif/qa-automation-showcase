@@ -1,0 +1,26 @@
+{
+  "name": "qa-automation-showcase",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Vitrine QA Automation — E2E web (Playwright) + mobile React Native (Detox) avec CI",
+  "workspaces": [
+    "apps/api",
+    "apps/web",
+    "tests/playwright"
+  ],
+  "scripts": {
+    "api:start": "npm run start --workspace apps/api",
+    "web:dev": "npm run dev --workspace apps/web",
+    "web:build": "npm run build --workspace apps/web",
+    "web:preview": "npm run preview --workspace apps/web",
+    "dev": "npm run api:start & npm run web:dev",
+    "test:e2e": "npm run test --workspace tests/playwright",
+    "test:e2e:ui": "npm run test:ui --workspace tests/playwright",
+    "test:e2e:bdd": "npm run test:bdd --workspace tests/playwright",
+    "test:e2e:report": "npm run report --workspace tests/playwright",
+    "docs:living": "node tools/living-docs.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
