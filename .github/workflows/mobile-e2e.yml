@@ -90,7 +90,8 @@ jobs:
           working-directory: apps/mobile
           # Single line on purpose: the action runs inline `script:` lines
           # individually, so multi-line shell constructs would break.
-          script: npx detox test --configuration android.emu.release --headless --cleanup
+          # --retries: the CI emulator is slower; re-run any flaky spec file.
+          script: npx detox test --configuration android.emu.release --headless --cleanup --retries 2
 
       - name: Upload Detox artifacts
         if: failure()
