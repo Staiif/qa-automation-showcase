@@ -9,6 +9,14 @@ module.exports = {
       setupTimeout: 120000,
     },
   },
+  // Capture device logs + a screenshot for any FAILING test, under ./artifacts.
+  artifacts: {
+    rootDir: 'artifacts',
+    plugins: {
+      log: 'failing',
+      screenshot: 'failing',
+    },
+  },
   apps: {
     'ios.debug': {
       type: 'ios.app',

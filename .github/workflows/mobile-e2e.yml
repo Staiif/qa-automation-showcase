@@ -60,7 +60,7 @@ jobs:
           path: |
             ~/.android/avd/*
             ~/.android/adb*
-          key: avd-pixel7-api34-v1
+          key: avd-pixel7-api34-hwkb-v2
 
       - name: Create AVD snapshot (on cache miss)
         if: steps.avd-cache.outputs.cache-hit != 'true'
@@ -73,6 +73,7 @@ jobs:
           avd-name: Pixel_7_API_34
           force-avd-creation: false
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -no-snapshot-load
+          enable-hardware-keyboard: true
           disable-animations: false
           script: echo "AVD snapshot created."
 
@@ -86,6 +87,7 @@ jobs:
           avd-name: Pixel_7_API_34
           force-avd-creation: false
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -no-snapshot-save
+          enable-hardware-keyboard: true
           disable-animations: true
           working-directory: apps/mobile
           # Single line on purpose: the action runs inline `script:` lines
@@ -99,6 +101,7 @@ jobs:
         with:
           name: detox-artifacts-android
           path: apps/mobile/artifacts/
+          if-no-files-found: ignore
           retention-days: 14
 
   detox-ios:
@@ -152,4 +155,5 @@ jobs:
         with:
           name: detox-artifacts
           path: apps/mobile/artifacts/
+          if-no-files-found: ignore
           retention-days: 14
