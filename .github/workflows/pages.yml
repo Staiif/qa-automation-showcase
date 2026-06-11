@@ -47,6 +47,11 @@ jobs:
         working-directory: tests/playwright
         run: npx bddgen && npx playwright test --project=bdd
 
+      # Second app (Notely) — Playwright HTML report, proving the shared e2e-core.
+      - name: Generate Notely report (2nd app)
+        working-directory: tests/notes-e2e
+        run: npx playwright test
+
       - name: Generate living documentation
         run: npm run docs:living
 
@@ -67,10 +72,11 @@ jobs:
 
       - name: Assemble site
         run: |
-          mkdir -p _site/cucumber _site/mobile
+          mkdir -p _site/cucumber _site/mobile _site/notes
           cp tools/pages-index.html _site/index.html
           cp docs/living-documentation.html _site/living-documentation.html
           cp -r tests/playwright/reports/cucumber/. _site/cucumber/
+          cp -r tests/notes-e2e/playwright-report/. _site/notes/
           if [ -d mobile-report ]; then
             cp -r mobile-report/. _site/mobile/
           else

@@ -164,7 +164,8 @@ cp .env.example .env                 # comptes & secret de test
 npm install
 npx playwright install --with-deps   # navigateurs (une seule fois)
 
-npm run test:e2e          # toute la suite (API + web + specs + BDD)
+npm run test:e2e          # suite Taskly (API + web + specs + BDD)
+npm run test:notes        # suite Notely — 2e app, même e2e-core
 npm run test:e2e:ui       # mode UI interactif de Playwright
 npm run test:e2e:report   # ouvre le dernier rapport HTML
 npm run test:e2e:bdd      # scénarios Gherkin (FR + EN) uniquement

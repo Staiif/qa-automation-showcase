@@ -39,12 +39,13 @@
   </head>
   <body>
     <div class="wrap">
-      <span class="badge">QA Automation · Playwright · Detox · BDD</span>
-      <h1>Taskly — Living Documentation</h1>
+      <span class="badge">QA Automation · Playwright · Detox · BDD · e2e-core</span>
+      <h1>QA Automation Showcase — Living docs &amp; reports</h1>
       <p class="sub">
-        Comportements garantis par la suite de tests E2E (web + mobile), en
-        français et en anglais. Mis à jour automatiquement à chaque
-        <code>main</code> vert.
+        Comportements garantis et résultats des suites E2E (web + mobile, FR +
+        EN). Deux apps web — <strong>Taskly</strong> &amp; <strong>Notely</strong>
+        — partagent un même <code>e2e-core</code>. Mis à jour automatiquement à
+        chaque <code>main</code> vert.
       </p>
 
       <div class="grid">
@@ -62,6 +63,11 @@
           <h2>📱 Rapport mobile (Detox)</h2>
           <p>Résultats des scénarios mobile Android (FR + EN) : pass/fail et
             durées, générés par jest-html-reporters.</p>
+        </a>
+        <a class="card" href="./notes/index.html">
+          <h2>🗒️ Rapport Notely (2e app)</h2>
+          <p>2e app web consommant le <strong>même e2e-core</strong> que Taskly
+            (BasePage · ApiClient · fixtures) — la preuve du framework factorisé.</p>
         </a>
       </div>
 
