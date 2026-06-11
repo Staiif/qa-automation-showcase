@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Taskly — QA Automation Showcase</title>
+    <style>
+      :root {
+        --bg: #0f172a; --card: #1e293b; --text: #e2e8f0; --muted: #94a3b8;
+        --accent: #a5b4fc; --border: #334155;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0; min-height: 100vh; background: var(--bg); color: var(--text);
+        font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+        line-height: 1.55; display: flex; align-items: center; justify-content: center;
+        padding: 2rem 1.25rem;
+      }
+      .wrap { max-width: 760px; width: 100%; }
+      h1 { font-size: 2rem; margin: 0 0 .25rem; }
+      .sub { color: var(--muted); margin: 0 0 2rem; }
+      .grid { display: grid; gap: 1rem; grid-template-columns: 1fr 1fr; }
+      @media (max-width: 620px) { .grid { grid-template-columns: 1fr; } }
+      a.card {
+        display: block; background: var(--card); border: 1px solid var(--border);
+        border-radius: 16px; padding: 1.4rem 1.5rem; text-decoration: none; color: inherit;
+        transition: border-color .15s ease, transform .15s ease;
+      }
+      a.card:hover { border-color: var(--accent); transform: translateY(-2px); }
+      a.card h2 { margin: 0 0 .4rem; font-size: 1.15rem; }
+      a.card p { margin: 0; color: var(--muted); font-size: .9rem; }
+      .badge {
+        display: inline-block; background: #312e81; color: #c7d2fe; border-radius: 999px;
+        padding: .1rem .6rem; font-size: .72rem; font-weight: 600; margin-bottom: .8rem;
+      }
+      footer { margin-top: 2rem; color: var(--muted); font-size: .82rem; }
+      footer a { color: var(--accent); }
+      code { background: #0b1220; padding: .1rem .4rem; border-radius: 6px; font-size: .85em; }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <span class="badge">QA Automation · Playwright · Detox · BDD</span>
+      <h1>Taskly — Living Documentation</h1>
+      <p class="sub">
+        Comportements garantis par la suite de tests E2E (web + mobile), en
+        français et en anglais. Mis à jour automatiquement à chaque
+        <code>main</code> vert.
+      </p>
+
+      <div class="grid">
+        <a class="card" href="./living-documentation.html">
+          <h2>📕 Living documentation</h2>
+          <p>Toutes les fonctionnalités &amp; scénarios Gherkin (web + mobile,
+            FR + EN, tags). Lisible par un PO / client.</p>
+        </a>
+        <a class="card" href="./cucumber/index.html">
+          <h2>🥒 Rapport Cucumber</h2>
+          <p>Résultats des scénarios web (pass/fail, durées, étapes), généré par
+            Playwright + playwright-bdd.</p>
+        </a>
+      </div>
+
+      <footer>
+        Code source :
+        <a href="https://github.com/Staiif/qa-automation-showcase">github.com/Staiif/qa-automation-showcase</a>
+      </footer>
+    </div>
+  </body>
+</html>
