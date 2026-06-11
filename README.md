@@ -5,9 +5,15 @@
 > Le combo web + mobile dans un seul repo est volontaire : c'est ce qui
 > distingue un·e QA automation généraliste d'un·e spécialiste mobile.
 
-[![Web E2E](https://img.shields.io/badge/web%20e2e-playwright-2EAD33)](./tests/playwright)
-[![Mobile E2E](https://img.shields.io/badge/mobile%20e2e-detox-7B61FF)](./apps/mobile)
-[![CI](https://img.shields.io/badge/ci-github%20actions-2088FF)](./.github/workflows)
+[![Web E2E](https://github.com/Staiif/qa-automation-showcase/actions/workflows/web-e2e.yml/badge.svg)](https://github.com/Staiif/qa-automation-showcase/actions/workflows/web-e2e.yml)
+[![Mobile E2E](https://github.com/Staiif/qa-automation-showcase/actions/workflows/mobile-e2e.yml/badge.svg)](https://github.com/Staiif/qa-automation-showcase/actions/workflows/mobile-e2e.yml)
+[![Living documentation](https://github.com/Staiif/qa-automation-showcase/actions/workflows/pages.yml/badge.svg)](https://github.com/Staiif/qa-automation-showcase/actions/workflows/pages.yml)
+
+### 🔗 Démo live — [living documentation + rapports (web & mobile)](https://staiif.github.io/qa-automation-showcase/)
+
+> En français, lisible par un PO/client : tous les comportements garantis +
+> les résultats des suites web (Cucumber) et mobile (Detox). Mis à jour
+> automatiquement à chaque `main` vert.
 
 ---
 
