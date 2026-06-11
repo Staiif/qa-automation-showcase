@@ -4,8 +4,8 @@ Version mobile de l'app Taskly, testée en bout-en-bout avec **Detox** (le
 standard du E2E React Native, gris-box sur émulateur Android / simulateur iOS),
 et des scénarios **Gherkin bilingues (FR + EN)** via **jest-cucumber**.
 
-> ✅ Vérifié : **16 scénarios passent sur un émulateur Android réel**
-> (Pixel 7, API 34) — auth, CRUD, filtres, en français et en anglais.
+> ✅ **Vert en CI** (émulateur Android réel, image `aosp_atd`) **et en local** —
+> **16 scénarios** : auth, CRUD, filtres, en français et en anglais.
 
 ## Ce que cette partie démontre
 
@@ -14,7 +14,8 @@ et des scénarios **Gherkin bilingues (FR + EN)** via **jest-cucumber**.
 - **BDD Gherkin** lisible par des non-devs, **FR + EN**, branché sur Detox.
 - `Plan du Scénario` / `Scenario Outline` data-driven pour les filtres.
 - **Tags** (`@smoke`, `@auth`, `@tasks`, `@filter`) avec filtrage par run.
-- Config Detox (`android.emu.debug`, `ios.sim.debug`).
+- Configs Detox **debug** (+ Metro) et **release** (bundle embarqué, sans Metro — utilisée en CI).
+- **Rapport HTML** (`jest-html-reporters`) publié sur GitHub Pages.
 
 ## Structure des tests
 
@@ -69,21 +70,31 @@ npx @react-native-community/cli@latest init Taskly --version 0.76.5 --skip-insta
 ## Lancer la suite (Android)
 
 ```bash
-npm install
+npm install   # charger d'abord l'env Android : JAVA_HOME, ANDROID_HOME (+ binaires dans le PATH)
+```
 
-# 1. Démarrer un émulateur (headless possible)
-emulator -avd Pixel_7_API_34 -no-window -gpu swiftshader_indirect &
+**Release (recommandé — sans Metro, comme en CI)** : le JS est embarqué dans l'APK.
 
-# 2. Démarrer Metro (l'app debug charge le JS depuis le packager)
-npx react-native start &
+```bash
+emulator -avd Pixel_7_API_34 -no-window -gpu swiftshader_indirect &   # ou avec fenêtre
+npx detox build --configuration android.emu.release
+npx detox test  --configuration android.emu.release --headless        # -> 16/16
+```
 
-# 3. Build + run Detox (scénarios Gherkin FR + EN)
-npm run e2e:build:android
-npm run e2e:test:android
+**Debug (dev — live-reload via Metro)** :
+
+```bash
+emulator -avd Pixel_7_API_34 &
+npx react-native start &           # Metro : l'app debug charge le JS depuis le packager
+npm run e2e:build:android          # = detox build ... android.emu.debug
+npm run e2e:test:android           # = detox test  ... android.emu.debug
 ```
 
 iOS : `npm run e2e:build:ios && npm run e2e:test:ios` (macOS + Xcode +
 `applesimutils` requis).
 
-> ℹ️ La suite **web (Playwright + Gherkin)** à la racine tourne, elle, sans
-> outillage mobile sur un runner Linux standard.
+> ℹ️ En CI ([`mobile-e2e.yml`](../../.github/workflows/mobile-e2e.yml)), Detox
+> tourne en **release** sur un émulateur **`aosp_atd`** (léger, dialogues ANR
+> masqués, clavier matériel) — **pas de Metro** — et un **rapport HTML** est
+> publié sur la [démo live](https://staiif.github.io/qa-automation-showcase/).
+> La suite **web** tourne, elle, sans outillage mobile sur un runner Linux.
