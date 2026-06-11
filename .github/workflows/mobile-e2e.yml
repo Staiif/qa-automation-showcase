@@ -9,6 +9,7 @@ on:
     branches: [main]
     paths:
       - 'apps/mobile/**'
+      - '!apps/mobile/**/*.md' # doc-only changes don't need the emulator
       - '.github/workflows/mobile-e2e.yml'
 
 jobs:

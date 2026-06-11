@@ -6,6 +6,8 @@ name: Living documentation (Pages)
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - '**/*.md'
   workflow_dispatch:
 
 permissions:

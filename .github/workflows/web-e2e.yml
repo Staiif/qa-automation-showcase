@@ -3,6 +3,8 @@ name: Web E2E (Playwright)
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - '**/*.md'
   pull_request:
   workflow_dispatch:
 
