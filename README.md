@@ -31,9 +31,10 @@
 | **Comptes en variables d'environnement** (rien en dur) | [`.env.example`](./.env.example) · [`apps/api/src/config.js`](./apps/api/src/config.js) |
 | Tests **multi-navigateurs** (Chromium / Firefox / WebKit / mobile) | [`playwright.config.ts`](./tests/playwright/playwright.config.ts) |
 | **Tests d'accessibilité** automatisés (axe-core, WCAG 2 AA) | [`specs/accessibility.spec.ts`](./tests/playwright/specs/accessibility.spec.ts) |
-| **E2E mobile** React Native + **Gherkin bilingue** (Detox, Android vérifié) | [`apps/mobile/e2e`](./apps/mobile/e2e) |
-| **CI** prête à l'emploi (matrice de navigateurs + runner macOS) | [`.github/workflows`](./.github/workflows) |
-| Stratégie anti-flaky : `testID` stables, retries, trace on retry | partout |
+| **E2E mobile** React Native + **Gherkin bilingue** (Detox, **vert en CI** sur émulateur Android) | [`apps/mobile/e2e`](./apps/mobile/e2e) |
+| **CI** GitHub Actions (navigateurs Linux · émulateur Android · déploiement Pages) | [`.github/workflows`](./.github/workflows) |
+| **Rapports publiés** sur GitHub Pages (living doc + Cucumber web + Detox mobile) | [démo live](https://staiif.github.io/qa-automation-showcase/) |
+| Stratégie anti-flaky : `testID` stables, retries, `aosp_atd` + ANR masqués (mobile) | partout |
 
 ## 🧱 Architecture du monorepo
 
@@ -42,16 +43,17 @@
 ├── apps/
 │   ├── api/            # API Express (auth + tasks) — comptes lus dans l'env, endpoint de teardown
 │   ├── web/            # App démo « Taskly » — Vite + React + TS (cible des tests web)
-│   └── mobile/         # App démo « Taskly » — React Native (cible des tests Detox)
+│   └── mobile/         # App démo « Taskly » — React Native + projet natif android/ (cible Detox)
 ├── tests/
-│   └── playwright/     # Suite E2E + API : POM, fixtures, specs TS, features Gherkin (FR/EN)
+│   └── playwright/     # E2E + API : POM, fixtures, specs TS, features Gherkin (FR/EN), steps
+├── tools/              # living-docs.mjs (doc unifiée) + landing GitHub Pages
 ├── .env.example        # Variables d'env (comptes, secret de test) — à copier en .env
-└── .github/workflows/  # web-e2e (Linux) + mobile-e2e (macOS)
+└── .github/workflows/  # web-e2e (Linux) · mobile-e2e (émulateur Android) · pages (déploiement)
 ```
 
 Les workspaces npm `apps/api`, `apps/web` et `tests/playwright` s'installent et
-tournent sur n'importe quel runner Linux. La partie mobile (outillage natif)
-est documentée dans [`apps/mobile/README.md`](./apps/mobile/README.md).
+tournent sur n'importe quel runner Linux. La partie mobile (projet natif Android
++ Detox) est documentée dans [`apps/mobile/README.md`](./apps/mobile/README.md).
 
 ## 🔐 Configuration & comptes (env)
 
@@ -103,26 +105,26 @@ Les scénarios sont tagués (`@auth`, `@tasks`, `@smoke`, `@filter`) pour cibler
 les runs :
 
 ```bash
-# Web (Playwright) : ne lancer que la smoke suite
-npm run test:e2e:bdd -- --grep @smoke
-# Mobile (Detox) : filtrage par tag
-CUCUMBER_TAGS='@smoke' npm run e2e:test:android --workspace apps/mobile
+# Web : ne lancer que la smoke suite
+(cd tests/playwright && npx bddgen && npx playwright test --project=bdd --grep @smoke)
+# Mobile : filtrage par tag (depuis apps/mobile)
+cd apps/mobile && CUCUMBER_TAGS='@smoke' npm run e2e:test:android
 ```
 
-## 📕 Living documentation
+## 📕 Living documentation & rapports — [démo live](https://staiif.github.io/qa-automation-showcase/)
 
-Deux artefacts **lisibles par un client / PO**, générés depuis les `.feature` :
+Trois artefacts **lisibles par un client / PO**, **publiés automatiquement sur
+GitHub Pages** à chaque `main` vert :
 
-- **Rapport Cucumber HTML** (web, avec pass/fail) : produit par `playwright-bdd`
-  à chaque run → `tests/playwright/reports/cucumber/index.html`.
-- **Living documentation unifiée** (web **+** mobile, FR + EN, tags) :
+- **Living documentation unifiée** (web **+** mobile, FR + EN, tags) — toutes les
+  fonctionnalités et scénarios garantis, sur une seule page.
+- **Rapport Cucumber HTML** (web, pass/fail) — produit par `playwright-bdd`.
+- **Rapport Detox HTML** (mobile, pass/fail) — produit par `jest-html-reporters`,
+  récupéré depuis le run mobile (cross-workflow).
 
 ```bash
-npm run docs:living   # -> docs/living-documentation.html
+npm run docs:living   # génère la living doc en local -> docs/living-documentation.html
 ```
-
-Une seule page qui liste toutes les fonctionnalités, scénarios et tags des deux
-plateformes — idéale pour montrer à un client *ce que la suite garantit*.
 
 ## 🚀 Démarrage rapide
 
@@ -165,18 +167,20 @@ elle a fait remonter (et permis de corriger) :
 ## 📱 Mobile (Detox + Gherkin)
 
 App React Native testée en bout-en-bout avec **Detox**, en scénarios
-**Gherkin FR + EN** (jest-cucumber). **Vérifié : 16 scénarios passent sur un
-émulateur Android réel** (Pixel 7 / API 34).
+**Gherkin FR + EN** (jest-cucumber). **Vert en CI** (émulateur Android réel,
+image `aosp_atd`) **et en local** — 16 scénarios répartis sur 4 fichiers pour le
+sharding multi-workers.
 
 ```
-PASS e2e/bdd.test.js
+PASS  e2e/auth.fr.test.js · auth.en · tasks.fr · tasks.en
   ✓ Connexion / Sign in · Déconnexion / Sign out
   ✓ Ajouter / Adding · Terminer / Completing · Supprimer / Deleting
   ✓ Filtrer / Filtering  (Scenario Outline ×2)
-Tests: 16 passed, 16 total
+Test Suites: 4 passed · Tests: 16 passed, 16 total
 ```
 
-Détails (toolchain Android, build, run) :
+Le run CI produit aussi un **rapport HTML Detox** publié sur la [démo live](https://staiif.github.io/qa-automation-showcase/).
+Détails (toolchain Android, build release **sans Metro**, run) :
 [`apps/mobile/README.md`](./apps/mobile/README.md).
 
 ---
