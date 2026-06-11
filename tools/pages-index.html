@@ -19,8 +19,7 @@
       .wrap { max-width: 760px; width: 100%; }
       h1 { font-size: 2rem; margin: 0 0 .25rem; }
       .sub { color: var(--muted); margin: 0 0 2rem; }
-      .grid { display: grid; gap: 1rem; grid-template-columns: 1fr 1fr; }
-      @media (max-width: 620px) { .grid { grid-template-columns: 1fr; } }
+      .grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); }
       a.card {
         display: block; background: var(--card); border: 1px solid var(--border);
         border-radius: 16px; padding: 1.4rem 1.5rem; text-decoration: none; color: inherit;
@@ -55,9 +54,14 @@
             FR + EN, tags). Lisible par un PO / client.</p>
         </a>
         <a class="card" href="./cucumber/index.html">
-          <h2>🥒 Rapport Cucumber</h2>
+          <h2>🥒 Rapport Cucumber (web)</h2>
           <p>Résultats des scénarios web (pass/fail, durées, étapes), généré par
             Playwright + playwright-bdd.</p>
+        </a>
+        <a class="card" href="./mobile/index.html">
+          <h2>📱 Rapport mobile (Detox)</h2>
+          <p>Résultats des scénarios mobile Android (FR + EN) : pass/fail et
+            durées, générés par jest-html-reporters.</p>
         </a>
       </div>
 

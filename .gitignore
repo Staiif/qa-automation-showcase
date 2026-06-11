@@ -19,6 +19,7 @@ blob-report/
 
 # generated reports / living documentation
 tests/playwright/reports/
+apps/mobile/reports/
 docs/living-documentation.html
 
 # Detox / React Native

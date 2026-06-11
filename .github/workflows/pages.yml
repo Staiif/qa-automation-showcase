@@ -10,6 +10,7 @@ on:
 
 permissions:
   contents: read
+  actions: read
   pages: write
   id-token: write
 
@@ -47,12 +48,32 @@ jobs:
       - name: Generate living documentation
         run: npm run docs:living
 
+      # Pull the mobile HTML report from the latest green Mobile E2E run
+      # (generated there because it needs the Android emulator).
+      - name: Fetch latest mobile report
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          RID=$(gh run list --workflow "Mobile E2E (Detox)" --status success --branch main --limit 1 --json databaseId --jq '.[0].databaseId // empty')
+          if [ -n "$RID" ]; then
+            gh run download "$RID" -n mobile-report -D mobile-report \
+              && echo "Mobile report fetched from run $RID" \
+              || echo "::warning::mobile-report artifact not found on run $RID"
+          else
+            echo "::warning::no successful Mobile E2E run yet — mobile report skipped"
+          fi
+
       - name: Assemble site
         run: |
-          mkdir -p _site/cucumber
+          mkdir -p _site/cucumber _site/mobile
           cp tools/pages-index.html _site/index.html
           cp docs/living-documentation.html _site/living-documentation.html
           cp -r tests/playwright/reports/cucumber/. _site/cucumber/
+          if [ -d mobile-report ]; then
+            cp -r mobile-report/. _site/mobile/
+          else
+            echo "<!doctype html><meta charset=utf-8><title>Mobile report</title><body style='font-family:system-ui;background:#0f172a;color:#94a3b8;padding:2rem'>Rapport mobile pas encore disponible — il sera publié au prochain run vert de <b>Mobile E2E</b>.</body>" > _site/mobile/index.html
+          fi
 
       - uses: actions/upload-pages-artifact@v3
         with:

@@ -98,6 +98,16 @@ jobs:
           # focus; --retries re-runs any genuinely flaky spec file.
           script: adb shell settings put global hide_error_dialogs 1 && npx detox test --configuration android.emu.release --headless --cleanup --retries 2
 
+      # Published to GitHub Pages by the "Living documentation (Pages)" workflow.
+      - name: Upload mobile HTML report
+        if: success()
+        uses: actions/upload-artifact@v5
+        with:
+          name: mobile-report
+          path: apps/mobile/reports/mobile/
+          if-no-files-found: ignore
+          retention-days: 14
+
       - name: Upload Detox artifacts
         if: failure()
         uses: actions/upload-artifact@v5

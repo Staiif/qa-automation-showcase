@@ -8,7 +8,19 @@ module.exports = {
   maxWorkers: 1,
   globalSetup: 'detox/runners/jest/globalSetup',
   globalTeardown: 'detox/runners/jest/globalTeardown',
-  reporters: ['detox/runners/jest/reporter'],
+  reporters: [
+    'detox/runners/jest/reporter',
+    [
+      'jest-html-reporters',
+      {
+        publicPath: './reports/mobile',
+        filename: 'index.html',
+        pageTitle: 'Taskly — Mobile E2E (Detox · Gherkin FR + EN)',
+        darkTheme: true,
+        expand: true,
+      },
+    ],
+  ],
   testEnvironment: 'detox/runners/jest/testEnvironment',
   verbose: true,
 };
