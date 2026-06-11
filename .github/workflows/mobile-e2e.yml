@@ -60,14 +60,14 @@ jobs:
           path: |
             ~/.android/avd/*
             ~/.android/adb*
-          key: avd-pixel7-api34-hwkb-v3
+          key: avd-pixel7-atd-v4
 
       - name: Create AVD snapshot (on cache miss)
         if: steps.avd-cache.outputs.cache-hit != 'true'
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 34
-          target: google_apis
+          target: aosp_atd
           arch: x86_64
           profile: pixel_7
           avd-name: Pixel_7_API_34
@@ -75,13 +75,15 @@ jobs:
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -no-snapshot-load
           enable-hw-keyboard: true
           disable-animations: false
-          script: echo "AVD snapshot created."
+          # Bake "hide system ANR/crash dialogs" into the snapshot so a hung
+          # launcher can't steal window focus from the app under test.
+          script: adb shell settings put global hide_error_dialogs 1
 
       - name: Run Detox (Gherkin FR + EN)
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 34
-          target: google_apis
+          target: aosp_atd
           arch: x86_64
           profile: pixel_7
           avd-name: Pixel_7_API_34
@@ -92,8 +94,9 @@ jobs:
           working-directory: apps/mobile
           # Single line on purpose: the action runs inline `script:` lines
           # individually, so multi-line shell constructs would break.
-          # --retries: the CI emulator is slower; re-run any flaky spec file.
-          script: npx detox test --configuration android.emu.release --headless --cleanup --retries 2
+          # Hide system ANR dialogs (slow CI launcher) so they can't steal
+          # focus; --retries re-runs any genuinely flaky spec file.
+          script: adb shell settings put global hide_error_dialogs 1 && npx detox test --configuration android.emu.release --headless --cleanup --retries 2
 
       - name: Upload Detox artifacts
         if: failure()
