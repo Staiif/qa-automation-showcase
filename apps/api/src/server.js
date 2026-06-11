@@ -8,6 +8,9 @@ import {
   resetAll,
   resetUser,
   updateTask,
+  addNote,
+  listNotes,
+  removeNote,
 } from './store.js';
 
 const app = express();
@@ -107,6 +110,23 @@ app.patch('/api/tasks/:id', requireAuth, (req, res) => {
 app.delete('/api/tasks/:id', requireAuth, (req, res) => {
   const ok = removeTask(req.userEmail, req.params.id);
   if (!ok) return res.status(404).json({ error: 'Tâche introuvable.' });
+  res.status(204).end();
+});
+
+// --- Notes (second app, same backend) --------------------------------------
+app.get('/api/notes', requireAuth, (req, res) => {
+  res.json(listNotes(req.userEmail));
+});
+
+app.post('/api/notes', requireAuth, (req, res) => {
+  const text = String(req.body?.text ?? '').trim();
+  if (!text) return res.status(400).json({ error: 'Texte requis.' });
+  res.status(201).json(addNote(req.userEmail, text));
+});
+
+app.delete('/api/notes/:id', requireAuth, (req, res) => {
+  const ok = removeNote(req.userEmail, req.params.id);
+  if (!ok) return res.status(404).json({ error: 'Note introuvable.' });
   res.status(204).end();
 });
 

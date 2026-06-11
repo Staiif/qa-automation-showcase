@@ -21,6 +21,7 @@
 
 | Compétence | Où la voir |
 |---|---|
+| **E2E core partagé** consommé par **2 apps** (BasePage · ApiClient · fixtures) | [`packages/e2e-core`](./packages/e2e-core) |
 | **Page Object Model** — web **et** mobile (parité) | [`tests/playwright/pages`](./tests/playwright/pages) · [`apps/mobile/e2e/support/pages`](./apps/mobile/e2e/support/pages) |
 | **BDD / Gherkin bilingue** (FR + EN) au-dessus des Page Objects | [`features/`](./tests/playwright/features) · [`steps/`](./tests/playwright/steps) |
 | **Tags & living documentation** (Cucumber HTML + page unifiée) | [`tools/living-docs.mjs`](./tools/living-docs.mjs) |
@@ -40,20 +41,50 @@
 
 ```
 .
+├── packages/
+│   └── e2e-core/       # Toolkit E2E partagé (BasePage · ApiClient · fixtures) — consommé par 2 suites
 ├── apps/
-│   ├── api/            # API Express (auth + tasks) — comptes lus dans l'env, endpoint de teardown
-│   ├── web/            # App démo « Taskly » — Vite + React + TS (cible des tests web)
-│   └── mobile/         # App démo « Taskly » — React Native + projet natif android/ (cible Detox)
+│   ├── api/            # API Express (auth · tasks · notes) — comptes en env, endpoint de teardown
+│   ├── web/            # App « Taskly » (tâches) — Vite + React + TS
+│   ├── notes/          # App « Notely » (notes) — 2e app, même API + même e2e-core
+│   └── mobile/         # App « Taskly » — React Native + projet natif android/ (Detox)
 ├── tests/
-│   └── playwright/     # E2E + API : POM, fixtures, specs TS, features Gherkin (FR/EN), steps
+│   ├── playwright/     # Suite Tasks : POM, fixtures, specs TS, Gherkin (FR/EN) — sur e2e-core
+│   └── notes-e2e/      # Suite Notely : POM, fixtures, specs — sur le MÊME e2e-core
 ├── tools/              # living-docs.mjs (doc unifiée) + landing GitHub Pages
 ├── .env.example        # Variables d'env (comptes, secret de test) — à copier en .env
-└── .github/workflows/  # web-e2e (Linux) · mobile-e2e (émulateur Android) · pages (déploiement)
+└── .github/workflows/  # web-e2e (Tasks · BDD · Notely) · mobile-e2e (Android) · pages
 ```
 
-Les workspaces npm `apps/api`, `apps/web` et `tests/playwright` s'installent et
+Monorepo npm workspaces (`packages/*`, `apps/*`, `tests/*`) ; les suites web
 tournent sur n'importe quel runner Linux. La partie mobile (projet natif Android
 + Detox) est documentée dans [`apps/mobile/README.md`](./apps/mobile/README.md).
+
+## 🧩 E2E core partagé — un cœur, plusieurs apps
+
+Le vrai enjeu Lead n'est pas d'écrire des tests, c'est de **factoriser le
+framework** pour qu'ajouter une app coûte presque rien. Ici, **deux apps** —
+**Taskly** (tâches) et **Notely** (notes) — partagent **un seul**
+[`@taskly/e2e-core`](./packages/e2e-core) :
+
+```
+                    packages/e2e-core
+       BasePage · ApiClient · makeAuthFixtures · seedSession
+              ▲                                   ▲
+   tests/playwright  (Taskly)          tests/notes-e2e  (Notely)
+   POM + Gherkin FR/EN (BDD)           POM + specs Playwright (sans BDD)
+   class TaskApiClient extends …       class NotesApiClient extends …
+```
+
+Chaque suite n'écrit que **son domaine** : ses Page Objects (qui étendent
+`BasePage`) et son client API (qui étend `ApiClient` avec `createTask` /
+`createNote`). L'**isolation par worker**, le **teardown auto** et le **seed de
+session** viennent du core — y compris le branchement BDD côté Taskly **et** un
+test Playwright standard côté Notely (le core n'est pas lié à Cucumber).
+
+> Transposition web d'un vrai `e2e-core` partagé entre une flotte d'apps mobiles
+> (Detox/Cucumber) : la duplication entre suites est le principal coût qu'un
+> Lead QA doit tuer.
 
 ## 🔐 Configuration & comptes (env)
 

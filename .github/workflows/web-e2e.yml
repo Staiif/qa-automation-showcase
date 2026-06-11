@@ -84,3 +84,39 @@ jobs:
           name: playwright-report-bdd
           path: tests/playwright/playwright-report/
           retention-days: 14
+
+  notes:
+    name: Notely E2E (2nd app on e2e-core)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Provision env
+        run: cp .env.example .env
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browser (chromium)
+        working-directory: tests/notes-e2e
+        run: npx playwright install --with-deps chromium
+
+      - name: Run Notely E2E
+        working-directory: tests/notes-e2e
+        run: npx playwright test
+
+      - name: Upload report
+        if: failure()
+        uses: actions/upload-artifact@v5
+        with:
+          name: playwright-report-notes
+          path: tests/notes-e2e/playwright-report/
+          if-no-files-found: ignore
+          retention-days: 14

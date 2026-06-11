@@ -3,14 +3,11 @@ import { fileURLToPath } from 'node:url';
 import dotenv from 'dotenv';
 import { requireEnv } from '@taskly/e2e-core';
 
-// Load the repo-root .env so credentials come from the environment, never
-// from source. CI provides these via secrets / `cp .env.example .env`.
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 
-// Use `||` (not `??`) so an empty string in .env falls back to the default.
 export const API_URL = process.env.VITE_API_URL || 'http://localhost:3001';
-export const BASE_URL = process.env.BASE_URL || 'http://localhost:4173';
+export const BASE_URL = process.env.NOTES_BASE_URL || 'http://localhost:4174';
 export const TEST_SECRET = requireEnv('TEST_SUPPORT_SECRET');
 
 export const DEMO_USER = {

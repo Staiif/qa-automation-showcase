@@ -1,10 +1,10 @@
 import { type Locator, type Page, expect } from '@playwright/test';
+import { BasePage } from '@taskly/e2e-core';
 
 /**
- * Page Object for the task board (the authenticated view).
+ * Page Object for the task board (authenticated view) — extends BasePage.
  */
-export class TaskBoardPage {
-  readonly page: Page;
+export class TaskBoardPage extends BasePage {
   readonly heading: Locator;
   readonly userEmail: Locator;
   readonly logout: Locator;
@@ -18,18 +18,18 @@ export class TaskBoardPage {
   readonly filterDone: Locator;
 
   constructor(page: Page) {
-    this.page = page;
-    this.heading = page.getByRole('heading', { name: 'Mes tâches' });
-    this.userEmail = page.getByTestId('user-email');
-    this.logout = page.getByTestId('logout-button');
-    this.newTaskInput = page.getByTestId('new-task-input');
-    this.addButton = page.getByTestId('add-task-button');
-    this.items = page.getByTestId('task-item');
-    this.activeCount = page.getByTestId('active-count');
-    this.emptyState = page.getByTestId('empty-state');
-    this.filterAll = page.getByTestId('filter-all');
-    this.filterActive = page.getByTestId('filter-active');
-    this.filterDone = page.getByTestId('filter-done');
+    super(page);
+    this.heading = this.page.getByRole('heading', { name: 'Mes tâches' });
+    this.userEmail = this.byId('user-email');
+    this.logout = this.byId('logout-button');
+    this.newTaskInput = this.byId('new-task-input');
+    this.addButton = this.byId('add-task-button');
+    this.items = this.byId('task-item');
+    this.activeCount = this.byId('active-count');
+    this.emptyState = this.byId('empty-state');
+    this.filterAll = this.byId('filter-all');
+    this.filterActive = this.byId('filter-active');
+    this.filterDone = this.byId('filter-done');
   }
 
   /** A single task row, located by its visible title. */

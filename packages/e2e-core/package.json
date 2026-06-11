@@ -1,0 +1,15 @@
+{
+  "name": "@taskly/e2e-core",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Shared E2E toolkit (BasePage, ApiClient setup/teardown, fixtures factory) consumed by every app's suite",
+  "type": "module",
+  "main": "src/index.js",
+  "types": "index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "default": "./src/index.js"
+    }
+  }
+}
