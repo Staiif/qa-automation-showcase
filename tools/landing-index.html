@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Qatias — QA Automation · Mobile &amp; Web</title>
+    <meta
+      name="description"
+      content="Qatias — automatisation des tests E2E mobile (Detox) et web (Playwright), CI/CD et BDD. Des releases fiables, sans stress."
+    />
+    <style>
+      :root {
+        --bg: #0f172a; --bg2: #0b1220; --card: #1e293b; --text: #e2e8f0;
+        --muted: #94a3b8; --accent: #a5b4fc; --accent2: #6366f1; --border: #334155;
+      }
+      * { box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
+      body {
+        margin: 0; background: var(--bg); color: var(--text); line-height: 1.6;
+        font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+      }
+      .wrap { max-width: 920px; margin: 0 auto; padding: 0 1.25rem; }
+      a { color: var(--accent); }
+
+      /* Nav */
+      nav { display: flex; justify-content: space-between; align-items: center; padding: 1.25rem 0; }
+      .brand { font-weight: 800; font-size: 1.25rem; letter-spacing: -0.02em; }
+      .brand b { color: var(--accent); }
+      nav .links a { color: var(--muted); text-decoration: none; margin-left: 1.2rem; font-size: .9rem; }
+      nav .links a:hover { color: var(--text); }
+
+      /* Hero */
+      header.hero { padding: 3.5rem 0 2.5rem; }
+      .eyebrow {
+        display: inline-block; background: #312e81; color: #c7d2fe; border-radius: 999px;
+        padding: .15rem .7rem; font-size: .75rem; font-weight: 700; margin-bottom: 1rem;
+      }
+      h1 { font-size: clamp(2rem, 5vw, 3rem); line-height: 1.1; margin: 0 0 1rem; letter-spacing: -0.03em; }
+      h1 .grad { background: linear-gradient(90deg, var(--accent), var(--accent2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+      .lead { font-size: 1.15rem; color: var(--muted); max-width: 640px; margin: 0 0 1.75rem; }
+      .cta { display: flex; gap: .75rem; flex-wrap: wrap; }
+      .btn { display: inline-block; padding: .7rem 1.2rem; border-radius: 10px; font-weight: 600; text-decoration: none; }
+      .btn-primary { background: var(--accent2); color: #fff; }
+      .btn-primary:hover { background: #4f46e5; }
+      .btn-ghost { border: 1px solid var(--border); color: var(--text); }
+      .btn-ghost:hover { border-color: var(--accent); }
+
+      section { padding: 2.5rem 0; border-top: 1px solid var(--border); }
+      h2 { font-size: 1.4rem; margin: 0 0 .35rem; }
+      .section-sub { color: var(--muted); margin: 0 0 1.5rem; }
+
+      .grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+      .card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 1.25rem 1.35rem; }
+      .card h3 { margin: 0 0 .35rem; font-size: 1.05rem; }
+      .card p { margin: 0; color: var(--muted); font-size: .92rem; }
+      a.card { text-decoration: none; color: inherit; transition: border-color .15s ease, transform .15s ease; }
+      a.card:hover { border-color: var(--accent); transform: translateY(-2px); }
+      .card .meta { color: var(--accent); font-size: .8rem; font-weight: 600; margin-top: .5rem; }
+
+      .stack { display: flex; flex-wrap: wrap; gap: .5rem; }
+      .chip { background: var(--bg2); border: 1px solid var(--border); border-radius: 999px; padding: .25rem .7rem; font-size: .82rem; color: var(--text); }
+
+      footer { border-top: 1px solid var(--border); padding: 2rem 0 2.5rem; color: var(--muted); font-size: .9rem; }
+      footer a { color: var(--accent); text-decoration: none; }
+      .foot-links { display: flex; gap: 1.2rem; flex-wrap: wrap; margin-top: .5rem; }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <nav>
+        <div class="brand"><b>Qatias</b></div>
+        <div class="links">
+          <a href="#services">Services</a>
+          <a href="#preuve">Démo</a>
+          <a href="#contact">Contact</a>
+        </div>
+      </nav>
+
+      <header class="hero">
+        <span class="eyebrow">QA Automation · Mobile &amp; Web</span>
+        <h1>Vos releases mobile &amp; web,<br /><span class="grad">fiables et sans stress.</span></h1>
+        <p class="lead">
+          J'automatise vos tests <strong>end-to-end</strong> (mobile React Native
+          &amp; web), je les branche en <strong>CI/CD</strong>, et je rends la
+          qualité <strong>lisible par le métier</strong> grâce au BDD. Moins de
+          régressions, des mises en production sereines.
+        </p>
+        <div class="cta">
+          <a class="btn btn-primary" href="#preuve">Voir la démo live →</a>
+          <a class="btn btn-ghost" href="#contact">Me contacter</a>
+        </div>
+      </header>
+
+      <section id="services">
+        <h2>Ce que j'apporte</h2>
+        <p class="section-sub">Une mission = des tests qui tournent, vite, et que toute l'équipe comprend.</p>
+        <div class="grid">
+          <div class="card">
+            <h3>📱🌐 E2E mobile &amp; web</h3>
+            <p>Detox (React Native), Playwright, Cypress, Maestro. Page Object Model,
+              sélecteurs stables, suites non-flaky.</p>
+          </div>
+          <div class="card">
+            <h3>⚙️ CI/CD industrialisée</h3>
+            <p>Tests parallélisés iOS/Android, builds reproductibles, rapports
+              automatiques — du temps d'exécution divisé, des pipelines verts.</p>
+          </div>
+          <div class="card">
+            <h3>🥒 BDD &amp; living documentation</h3>
+            <p>Scénarios Gherkin (FR/EN) lisibles par un PO. La doc des
+              comportements garantis, générée et publiée automatiquement.</p>
+          </div>
+          <div class="card">
+            <h3>🧩 Framework &amp; stratégie</h3>
+            <p>Architecture d'un <em>e2e-core</em> partagé entre plusieurs apps,
+              audit de l'existant, montée en compétence de l'équipe.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="preuve">
+        <h2>La preuve, en live</h2>
+        <p class="section-sub">
+          Pas de blabla : une vitrine technique publique, <strong>CI verte</strong>,
+          rapports mis à jour automatiquement. Web (Taskly) + mobile (Detox) +
+          une 2<sup>e</sup> app (Notely) sur un même cœur de tests.
+        </p>
+        <div class="grid">
+          <a class="card" href="./living-documentation.html">
+            <h3>📕 Living documentation</h3>
+            <p>Tous les comportements garantis (web + mobile, FR + EN).</p>
+            <div class="meta">Ouvrir →</div>
+          </a>
+          <a class="card" href="./cucumber/index.html">
+            <h3>🥒 Rapport Cucumber (web)</h3>
+            <p>Résultats pass/fail des scénarios web (Playwright + BDD).</p>
+            <div class="meta">Ouvrir →</div>
+          </a>
+          <a class="card" href="./mobile/index.html">
+            <h3>📱 Rapport mobile (Detox)</h3>
+            <p>Scénarios Android, exécutés sur émulateur réel en CI.</p>
+            <div class="meta">Ouvrir →</div>
+          </a>
+          <a class="card" href="https://github.com/Staiif/qa-automation-showcase">
+            <h3>💻 Code source</h3>
+            <p>Le repo complet : Playwright · Detox · BDD · e2e-core · CI.</p>
+            <div class="meta">GitHub →</div>
+          </a>
+        </div>
+      </section>
+
+      <section id="stack">
+        <h2>Stack</h2>
+        <p class="section-sub">Outillage QA automation web &amp; mobile.</p>
+        <div class="stack">
+          <span class="chip">Playwright</span>
+          <span class="chip">Detox</span>
+          <span class="chip">Cypress</span>
+          <span class="chip">Maestro</span>
+          <span class="chip">Cucumber / BDD</span>
+          <span class="chip">React Native</span>
+          <span class="chip">TypeScript / JS</span>
+          <span class="chip">CI/CD (GitHub Actions)</span>
+          <span class="chip">API testing</span>
+        </div>
+      </section>
+
+      <section id="about">
+        <h2>Derrière Qatias</h2>
+        <p class="section-sub" style="max-width: 640px">
+          5+ ans en QA automation, dont Lead QA sur des applications
+          <strong>fintech &amp; bancaires</strong> critiques (mobile React Native
+          + web). Spécialité : industrialiser les tests E2E et fiabiliser les
+          releases d'équipes Agile.
+        </p>
+      </section>
+
+      <footer id="contact">
+        <strong>Disponible pour vos missions QA automation — remote / PACA.</strong>
+        <div class="foot-links">
+          <a href="mailto:contact@qatias.io">contact@qatias.io</a>
+          <a href="https://www.linkedin.com/in/matias-a-94563623b/">LinkedIn</a>
+          <a href="https://github.com/Staiif/qa-automation-showcase">GitHub</a>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>

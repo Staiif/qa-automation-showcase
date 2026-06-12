@@ -73,7 +73,8 @@ jobs:
       - name: Assemble site
         run: |
           mkdir -p _site/cucumber _site/mobile _site/notes
-          cp tools/pages-index.html _site/index.html
+          cp tools/landing-index.html _site/index.html
+          cp tools/pages-index.html _site/reports.html
           cp docs/living-documentation.html _site/living-documentation.html
           cp -r tests/playwright/reports/cucumber/. _site/cucumber/
           cp -r tests/notes-e2e/playwright-report/. _site/notes/
