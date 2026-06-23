@@ -1,0 +1,23 @@
+{
+  "name": "@taskly/appium-e2e",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Appium (WebDriver) mobile E2E suite for the Taskly React Native app — Screen Object parity with the Detox suite, same testIDs. Standalone (like apps/mobile), outside the npm workspaces.",
+  "scripts": {
+    "test": "wdio run ./wdio.conf.js",
+    "appium:driver": "appium driver install uiautomator2@3.10.0"
+  },
+  "devDependencies": {
+    "@wdio/appium-service": "^9.0.0",
+    "@wdio/cli": "^9.0.0",
+    "@wdio/junit-reporter": "^9.0.0",
+    "@wdio/local-runner": "^9.0.0",
+    "@wdio/mocha-framework": "^9.0.0",
+    "@wdio/spec-reporter": "^9.0.0",
+    "appium": "^2.11.0",
+    "appium-uiautomator2-driver": "^3.10.0",
+    "dotenv": "16.6.1",
+    "webdriverio": "^9.0.0"
+  }
+}

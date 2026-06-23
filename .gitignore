@@ -20,6 +20,7 @@ blob-report/
 # generated reports / living documentation
 tests/playwright/reports/
 tests/selenium-e2e/reports/
+tests/appium-e2e/reports/
 apps/mobile/reports/
 docs/living-documentation.html
 
