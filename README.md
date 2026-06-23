@@ -6,6 +6,7 @@
 > distingue un·e QA automation généraliste d'un·e spécialiste mobile.
 
 [![Web E2E](https://github.com/Staiif/qa-automation-showcase/actions/workflows/web-e2e.yml/badge.svg)](https://github.com/Staiif/qa-automation-showcase/actions/workflows/web-e2e.yml)
+[![Selenium E2E](https://github.com/Staiif/qa-automation-showcase/actions/workflows/selenium-e2e.yml/badge.svg)](https://github.com/Staiif/qa-automation-showcase/actions/workflows/selenium-e2e.yml)
 [![Mobile E2E](https://github.com/Staiif/qa-automation-showcase/actions/workflows/mobile-e2e.yml/badge.svg)](https://github.com/Staiif/qa-automation-showcase/actions/workflows/mobile-e2e.yml)
 [![Living documentation](https://github.com/Staiif/qa-automation-showcase/actions/workflows/pages.yml/badge.svg)](https://github.com/Staiif/qa-automation-showcase/actions/workflows/pages.yml)
 
@@ -23,6 +24,7 @@
 |---|---|
 | **E2E core partagé** consommé par **2 apps** (BasePage · ApiClient · fixtures) | [`packages/e2e-core`](./packages/e2e-core) |
 | **Page Object Model** — web **et** mobile (parité) | [`tests/playwright/pages`](./tests/playwright/pages) · [`apps/mobile/e2e/support/pages`](./apps/mobile/e2e/support/pages) |
+| **2ᵉ stack web : Selenium WebDriver** (JS + Mocha) — POM en parité, même app, même `e2e-core` | [`tests/selenium-e2e`](./tests/selenium-e2e) |
 | **BDD / Gherkin bilingue** (FR + EN) au-dessus des Page Objects | [`features/`](./tests/playwright/features) · [`steps/`](./tests/playwright/steps) |
 | **Tags & living documentation** (Cucumber HTML + page unifiée) | [`tools/living-docs.mjs`](./tools/living-docs.mjs) |
 | **Fixtures** custom (compte par worker, board authentifié) | [`tests/playwright/fixtures.ts`](./tests/playwright/fixtures.ts) |
@@ -50,10 +52,11 @@
 │   └── mobile/         # App « Taskly » — React Native + projet natif android/ (Detox)
 ├── tests/
 │   ├── playwright/     # Suite Tasks : POM, fixtures, specs TS, Gherkin (FR/EN) — sur e2e-core
-│   └── notes-e2e/      # Suite Notely : POM, fixtures, specs — sur le MÊME e2e-core
+│   ├── notes-e2e/      # Suite Notely : POM, fixtures, specs — sur le MÊME e2e-core
+│   └── selenium-e2e/   # Suite Selenium (JS + Mocha) : POM en parité — réutilise e2e-core (requireEnv + token)
 ├── tools/              # living-docs.mjs (doc unifiée) + landing GitHub Pages
 ├── .env.example        # Variables d'env (comptes, secret de test) — à copier en .env
-└── .github/workflows/  # web-e2e (Tasks · BDD · Notely) · mobile-e2e (Android) · pages
+└── .github/workflows/  # web-e2e (Tasks · BDD · Notely) · selenium-e2e (Chrome) · mobile-e2e (Android) · pages
 ```
 
 Monorepo npm workspaces (`packages/*`, `apps/*`, `tests/*`) ; les suites web
@@ -85,6 +88,26 @@ test Playwright standard côté Notely (le core n'est pas lié à Cucumber).
 > Transposition web d'un vrai `e2e-core` partagé entre une flotte d'apps mobiles
 > (Detox/Cucumber) : la duplication entre suites est le principal coût qu'un
 > Lead QA doit tuer.
+
+## 🧪 Selenium WebDriver (JS) — la même app, une autre stack
+
+La même app **Taskly** est aussi couverte par une suite **Selenium WebDriver**
+(JavaScript + Mocha), en **parité de Page Object Model** avec la suite
+Playwright : mêmes `data-testid`, même `@taskly/e2e-core` (le `requireEnv` et le
+schéma de token sont réutilisés tels quels), mêmes principes d'isolation
+(reset + compte worker via l'API) et de seed de session (`localStorage`).
+
+> L'intérêt : démontrer que le **framework de test** — POM, waits explicites,
+> setup/teardown via API, anti-flaky — est maîtrisé **indépendamment de
+> l'outil**. WebDriver (encore la stack QA n°1 sur le marché entreprise) au lieu
+> de Playwright, sur exactement la même base.
+
+```bash
+npm run test:selenium          # boote l'API + le preview, lance la suite (Chrome headless)
+npm run test:selenium:report   # + rapport HTML (mochawesome) -> tests/selenium-e2e/reports/
+```
+
+Détails et options : [`tests/selenium-e2e/README.md`](./tests/selenium-e2e).
 
 ## 🔐 Configuration & comptes (env)
 
