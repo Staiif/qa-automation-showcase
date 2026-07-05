@@ -1,18 +1,59 @@
 const { device, expect } = require('detox');
 const loginScreen = require('./pages/LoginScreen');
 const taskBoard = require('./pages/TaskBoardScreen');
+const reporter = require('./logsReporter');
 
 // Standalone demo app (no backend): credentials live in src/auth.ts.
 const DEMO = { email: 'demo@taskly.app', password: 'password123' };
 
+/**
+ * Scenario name from Jest (strip the feature/describe prefix).
+ * NB: the global `expect` is Detox's (exposeGlobals), which has no getState —
+ * Jest's own expect must come from @jest/globals, only resolvable under Jest.
+ */
+function currentScenarioName() {
+  try {
+    const { expect: jestExpect } = require('@jest/globals');
+    // Full Jest name (describe + test, space-separated) — kept as-is, the
+    // feature prefix is informative and there is no reliable separator.
+    return jestExpect.getState().currentTestName ?? 'unknown scenario';
+  } catch {
+    return 'unknown scenario';
+  }
+}
+
 /** Per-file Detox lifecycle: launch once, reset state before each scenario. */
 function setupHooks() {
   beforeAll(async () => {
-    await device.launchApp({ newInstance: true });
+    // detoxStudioLogs activates the in-app E2E logger for this launch only
+    await device.launchApp({ newInstance: true, launchArgs: { detoxStudioLogs: true } });
+    await reporter.startRun();
   });
   beforeEach(async () => {
     await device.reloadReactNative();
+    await reporter.startScenario(currentScenarioName());
   });
+  afterEach(async () => {
+    await reporter.endScenario(currentScenarioName());
+  });
+}
+
+/**
+ * Wrap the jest-cucumber definers so every step streams its outcome to the
+ * Logs Viewer (no-op when the logs-server is down or outside Jest).
+ */
+function instrument({ given, when, then }) {
+  const wrap = (define) => (pattern, cb) => define(pattern, async (...args) => {
+    const text = typeof pattern === 'string' ? pattern : String(pattern);
+    try {
+      await cb(...args);
+      await reporter.reportStep(text, 'passed');
+    } catch (error) {
+      await reporter.reportStep(text, 'failed', error);
+      throw error;
+    }
+  });
+  return { given: wrap(given), when: wrap(when), then: wrap(then) };
 }
 
 /**
@@ -20,7 +61,8 @@ function setupHooks() {
  * (LoginScreen / TaskBoardScreen), exactly like the web suite.
  * Loading a single-language feature only uses the matching subset.
  */
-const steps = ({ given, when, then }) => {
+const steps = (definers) => {
+  const { given, when, then } = instrument(definers);
   // ----- Français -----
   given('je suis sur la page de connexion', async () => {
     await loginScreen.expectVisible();
