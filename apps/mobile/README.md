@@ -54,8 +54,19 @@ sudo apt-get install -y openjdk-17-jdk          # (Linux ; macOS : brew install 
 avdmanager create avd -n Pixel_7_API_34 -k "system-images;android-34;google_apis;x86_64" -d pixel_7
 ```
 
-Variables d'env attendues : `JAVA_HOME`, `ANDROID_HOME` (+ `platform-tools`,
-`emulator`, `cmdline-tools/latest/bin` dans le `PATH`).
+Variables d'env attendues : `JAVA_HOME`, `ANDROID_HOME` / `ANDROID_SDK_ROOT`
+(+ `platform-tools`, `emulator`, `cmdline-tools/latest/bin` dans le `PATH`).
+Ajoute-les à ton shell (`~/.zshrc` / `~/.bashrc`) :
+
+```bash
+export ANDROID_SDK_ROOT="$HOME/Android/Sdk"
+export ANDROID_HOME="$ANDROID_SDK_ROOT"
+export PATH="$PATH:$ANDROID_SDK_ROOT/platform-tools:$ANDROID_SDK_ROOT/emulator:$ANDROID_SDK_ROOT/cmdline-tools/latest/bin"
+```
+
+> ⚠️ Un terminal **déjà ouvert** ne voit pas ces variables : lance
+> `source ~/.zshrc` (ou ouvre un nouveau terminal), sinon Detox échoue avec
+> `$ANDROID_SDK_ROOT is not defined`.
 
 ## Générer le projet natif
 
@@ -92,6 +103,36 @@ npm run e2e:test:android           # = detox test  ... android.emu.debug
 
 iOS : `npm run e2e:build:ios && npm run e2e:test:ios` (macOS + Xcode +
 `applesimutils` requis).
+
+## 🩺 Dépannage
+
+**`$ANDROID_SDK_ROOT is not defined`** — l'env Android n'est pas chargé dans le
+terminal courant. `source ~/.zshrc` ou ouvre un nouveau terminal (voir
+[Pré-requis Android](#pré-requis-android-one-time)).
+
+**`Failed to find the app binary … app-debug.apk`** — `e2e:test:android` **ne
+compile pas** l'app, il installe un APK déjà présent. Lance d'abord le build :
+`npm run e2e:build:android` (ou `detox build -c android.emu.release`).
+
+**`ENOSPC: System limit for number of file watchers reached`** (Metro / jest sur
+Linux) — le quota `fs.inotify.max_user_watches` est saturé (souvent par VS Code
+qui surveille tout le monorepo). Trois parades, déjà en place dans le repo :
+
+- `metro.config.js` exclut les artefacts de build (`android/build`, `.gradle`)
+  du watcher Metro ;
+- `.vscode/settings.json` (racine) ajoute `files.watcherExclude` pour
+  `node_modules`, les `build/` et `.gradle/` ;
+- `e2e/jest.config.js` force `watchman: false` (run one-shot, aucun watcher — et
+  évite un watchman système obsolète « empoisonné » à la limite inotify).
+
+Correctif de fond (relève le plafond, nécessite `sudo`) :
+
+```bash
+sudo sysctl fs.inotify.max_user_watches=524288 fs.inotify.max_user_instances=2048
+# permanent :
+echo -e "fs.inotify.max_user_watches=524288\nfs.inotify.max_user_instances=2048" \
+  | sudo tee /etc/sysctl.d/60-inotify.conf && sudo sysctl --system
+```
 
 > ℹ️ En CI ([`mobile-e2e.yml`](../../.github/workflows/mobile-e2e.yml)), Detox
 > tourne en **release** sur un émulateur **`aosp_atd`** (léger, dialogues ANR

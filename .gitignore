@@ -2,11 +2,16 @@
 node_modules/
 .pnp
 .pnp.js
+# npm is the project standard (package-lock.json) — ignore alt package managers
+bun.lock
+bun.lockb
 
 # builds
 dist/
 build/
 apps/web/dist/
+.gradle/
+apps/mobile/android/build/
 
 # Playwright
 test-results/
