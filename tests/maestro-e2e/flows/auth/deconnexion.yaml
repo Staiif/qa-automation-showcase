@@ -1,0 +1,19 @@
+appId: com.taskly
+name: Déconnexion — retour à l'écran de connexion
+tags: [auth]
+---
+- launchApp:
+    clearState: true
+- runFlow:
+    file: ../common/login.yaml
+    env:
+      EMAIL: ${EMAIL}
+      PASSWORD: ${PASSWORD}
+- assertVisible:
+    id: "board-title"
+- tapOn:
+    id: "logout-button"
+- assertVisible:
+    id: "login-title"
+- assertVisible:
+    id: "login-submit"

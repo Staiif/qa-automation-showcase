@@ -1,0 +1,29 @@
+appId: com.taskly
+name: Suppression d'une tâche — liste vide
+tags: [tasks]
+---
+- launchApp:
+    clearState: true
+- runFlow:
+    file: ../common/login.yaml
+    env:
+      EMAIL: ${EMAIL}
+      PASSWORD: ${PASSWORD}
+- assertVisible:
+    id: "board-title"
+# NB : titre sans accents — l'inputText de Maestro sur Android est limité
+# à l'ASCII (« Unicode not supported »), voir README.
+- tapOn:
+    id: "new-task-input"
+- inputText: "Nettoyer le bureau"
+- hideKeyboard
+- tapOn:
+    id: "add-task-button"
+- assertVisible:
+    id: "task-item-Nettoyer le bureau"
+- tapOn:
+    id: "task-delete-Nettoyer le bureau"
+- assertVisible:
+    id: "empty-state"
+- assertNotVisible:
+    id: "task-item-Nettoyer le bureau"

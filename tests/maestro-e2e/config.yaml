@@ -1,0 +1,8 @@
+# Workspace Maestro — les subflows (flows/common/) ne sont PAS listés ici :
+# ils ne s'exécutent que via runFlow, jamais comme tests autonomes.
+flows:
+  - "flows/auth/*.yaml"
+  - "flows/tasks/*.yaml"
+
+executionOrder:
+  continueOnFailure: true

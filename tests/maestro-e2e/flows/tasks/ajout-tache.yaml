@@ -1,0 +1,23 @@
+appId: com.taskly
+name: Ajout d'une tâche — visible et compteur incrémenté
+tags: [tasks]
+---
+- launchApp:
+    clearState: true
+- runFlow:
+    file: ../common/login.yaml
+    env:
+      EMAIL: ${EMAIL}
+      PASSWORD: ${PASSWORD}
+- assertVisible:
+    id: "board-title"
+- tapOn:
+    id: "new-task-input"
+- inputText: "Acheter du pain"
+- hideKeyboard
+- tapOn:
+    id: "add-task-button"
+- assertVisible:
+    id: "task-item-Acheter du pain"
+- assertVisible:
+    text: "1 tâche à faire"

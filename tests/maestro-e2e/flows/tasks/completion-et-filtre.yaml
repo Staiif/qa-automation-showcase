@@ -1,0 +1,33 @@
+appId: com.taskly
+name: Complétion d'une tâche — retrouvée dans « Terminées »
+tags: [tasks]
+---
+- launchApp:
+    clearState: true
+- runFlow:
+    file: ../common/login.yaml
+    env:
+      EMAIL: ${EMAIL}
+      PASSWORD: ${PASSWORD}
+- assertVisible:
+    id: "board-title"
+- tapOn:
+    id: "new-task-input"
+- inputText: "Faire les courses"
+- hideKeyboard
+- tapOn:
+    id: "add-task-button"
+- tapOn:
+    id: "task-toggle-Faire les courses"
+
+# La tâche cochée apparaît sous le filtre « Terminées »…
+- tapOn:
+    id: "filter-done"
+- assertVisible:
+    id: "task-item-Faire les courses"
+
+# …et le filtre « À faire » est vide.
+- tapOn:
+    id: "filter-active"
+- assertVisible:
+    id: "empty-state"

@@ -1,0 +1,19 @@
+appId: com.taskly
+name: Saisie vide — aucune tâche ajoutée
+tags: [tasks]
+---
+- launchApp:
+    clearState: true
+- runFlow:
+    file: ../common/login.yaml
+    env:
+      EMAIL: ${EMAIL}
+      PASSWORD: ${PASSWORD}
+- assertVisible:
+    id: "board-title"
+- tapOn:
+    id: "add-task-button"
+- assertVisible:
+    id: "empty-state"
+- assertVisible:
+    text: "0 tâche à faire"
