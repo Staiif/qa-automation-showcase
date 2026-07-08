@@ -1,0 +1,13 @@
+# Subflow réutilisable : saisie des identifiants + soumission.
+# EMAIL / PASSWORD sont injectés par le flow appelant (runFlow.env).
+appId: com.taskly
+---
+- tapOn:
+    id: "login-email"
+- inputText: ${EMAIL}
+- tapOn:
+    id: "login-password"
+- inputText: ${PASSWORD}
+- hideKeyboard
+- tapOn:
+    id: "login-submit"

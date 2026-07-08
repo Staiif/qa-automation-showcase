@@ -6,7 +6,10 @@
 > distingue un·e QA automation généraliste d'un·e spécialiste mobile.
 
 [![Web E2E](https://github.com/Staiif/qa-automation-showcase/actions/workflows/web-e2e.yml/badge.svg)](https://github.com/Staiif/qa-automation-showcase/actions/workflows/web-e2e.yml)
+[![Selenium E2E](https://github.com/Staiif/qa-automation-showcase/actions/workflows/selenium-e2e.yml/badge.svg)](https://github.com/Staiif/qa-automation-showcase/actions/workflows/selenium-e2e.yml)
 [![Mobile E2E](https://github.com/Staiif/qa-automation-showcase/actions/workflows/mobile-e2e.yml/badge.svg)](https://github.com/Staiif/qa-automation-showcase/actions/workflows/mobile-e2e.yml)
+[![Appium E2E](https://github.com/Staiif/qa-automation-showcase/actions/workflows/appium-e2e.yml/badge.svg)](https://github.com/Staiif/qa-automation-showcase/actions/workflows/appium-e2e.yml)
+[![Maestro E2E](https://github.com/Staiif/qa-automation-showcase/actions/workflows/maestro-e2e.yml/badge.svg)](https://github.com/Staiif/qa-automation-showcase/actions/workflows/maestro-e2e.yml)
 [![Living documentation](https://github.com/Staiif/qa-automation-showcase/actions/workflows/pages.yml/badge.svg)](https://github.com/Staiif/qa-automation-showcase/actions/workflows/pages.yml)
 
 ### 🔗 Démo live — [living documentation + rapports (web & mobile)](https://staiif.github.io/qa-automation-showcase/)
@@ -23,6 +26,9 @@
 |---|---|
 | **E2E core partagé** consommé par **2 apps** (BasePage · ApiClient · fixtures) | [`packages/e2e-core`](./packages/e2e-core) |
 | **Page Object Model** — web **et** mobile (parité) | [`tests/playwright/pages`](./tests/playwright/pages) · [`apps/mobile/e2e/support/pages`](./apps/mobile/e2e/support/pages) |
+| **2ᵉ stack web : Selenium WebDriver** (JS + Mocha) — POM en parité, même app, même `e2e-core` | [`tests/selenium-e2e`](./tests/selenium-e2e) |
+| **Mobile via WebDriver : Appium** (WebdriverIO + UiAutomator2) — Screen Objects en parité Detox, mêmes `testID` | [`tests/appium-e2e`](./tests/appium-e2e) |
+| **3ᵉ outil mobile : Maestro** (flows YAML déclaratifs) — mêmes scénarios, zéro dépendance npm | [`tests/maestro-e2e`](./tests/maestro-e2e) |
 | **BDD / Gherkin bilingue** (FR + EN) au-dessus des Page Objects | [`features/`](./tests/playwright/features) · [`steps/`](./tests/playwright/steps) |
 | **Tags & living documentation** (Cucumber HTML + page unifiée) | [`tools/living-docs.mjs`](./tools/living-docs.mjs) |
 | **Fixtures** custom (compte par worker, board authentifié) | [`tests/playwright/fixtures.ts`](./tests/playwright/fixtures.ts) |
@@ -50,10 +56,13 @@
 │   └── mobile/         # App « Taskly » — React Native + projet natif android/ (Detox)
 ├── tests/
 │   ├── playwright/     # Suite Tasks : POM, fixtures, specs TS, Gherkin (FR/EN) — sur e2e-core
-│   └── notes-e2e/      # Suite Notely : POM, fixtures, specs — sur le MÊME e2e-core
+│   ├── notes-e2e/      # Suite Notely : POM, fixtures, specs — sur le MÊME e2e-core
+│   ├── selenium-e2e/   # Suite Selenium (JS + Mocha) : POM en parité — réutilise e2e-core (requireEnv + token)
+│   ├── appium-e2e/     # Suite Appium (WebdriverIO) : mobile natif (RN) — parité Detox, standalone (comme apps/mobile)
+│   └── maestro-e2e/    # Suite Maestro : flows YAML déclaratifs — mêmes testID/scénarios, zéro dépendance npm
 ├── tools/              # living-docs.mjs (doc unifiée) + landing GitHub Pages
 ├── .env.example        # Variables d'env (comptes, secret de test) — à copier en .env
-└── .github/workflows/  # web-e2e (Tasks · BDD · Notely) · mobile-e2e (Android) · pages
+└── .github/workflows/  # web-e2e · selenium-e2e (Chrome) · mobile-e2e + appium-e2e + maestro-e2e (Android) · pages
 ```
 
 Monorepo npm workspaces (`packages/*`, `apps/*`, `tests/*`) ; les suites web
@@ -85,6 +94,73 @@ test Playwright standard côté Notely (le core n'est pas lié à Cucumber).
 > Transposition web d'un vrai `e2e-core` partagé entre une flotte d'apps mobiles
 > (Detox/Cucumber) : la duplication entre suites est le principal coût qu'un
 > Lead QA doit tuer.
+
+## 🧪 Selenium WebDriver (JS) — la même app, une autre stack
+
+La même app **Taskly** est aussi couverte par une suite **Selenium WebDriver**
+(JavaScript + Mocha), en **parité de Page Object Model** avec la suite
+Playwright : mêmes `data-testid`, même `@taskly/e2e-core` (le `requireEnv` et le
+schéma de token sont réutilisés tels quels), mêmes principes d'isolation
+(reset + compte worker via l'API) et de seed de session (`localStorage`).
+
+> L'intérêt : démontrer que le **framework de test** — POM, waits explicites,
+> setup/teardown via API, anti-flaky — est maîtrisé **indépendamment de
+> l'outil**. WebDriver (encore la stack QA n°1 sur le marché entreprise) au lieu
+> de Playwright, sur exactement la même base.
+
+```bash
+npm run test:selenium          # boote l'API + le preview, lance la suite (Chrome headless)
+npm run test:selenium:report   # + rapport HTML (mochawesome) -> tests/selenium-e2e/reports/
+```
+
+Détails et options : [`tests/selenium-e2e/README.md`](./tests/selenium-e2e).
+
+## 📲 Appium (WebDriver) — « Selenium pour le mobile »
+
+Selenium pilote des **navigateurs** ; son équivalent mobile, **Appium**, réutilise
+**le même protocole WebDriver** pour piloter des **apps natives**. L'app React
+Native Taskly est donc aussi couverte par une suite **Appium** (WebdriverIO +
+UiAutomator2), en **parité de Screen Object Model** avec la suite **Detox** —
+mêmes `testID`, mêmes scénarios.
+
+> Ça boucle la démonstration : **un même protocole (WebDriver), deux surfaces**.
+> Selenium sur le web (Chrome) **et** Appium sur le mobile natif (émulateur
+> Android) — à côté des outils « natifs » de chaque monde, Playwright (web) et
+> Detox (mobile).
+
+| | **Web** | **Mobile natif (RN)** |
+|---|---|---|
+| **Protocole WebDriver** | Selenium ([`tests/selenium-e2e`](./tests/selenium-e2e)) | **Appium** ([`tests/appium-e2e`](./tests/appium-e2e)) |
+| **Outil natif du monde** | Playwright ([`tests/playwright`](./tests/playwright)) | Detox ([`apps/mobile/e2e`](./apps/mobile/e2e)) |
+
+```bash
+# pré-requis : émulateur Android + APK release de l'app mobile
+(cd apps/mobile && npm install && cd android && ./gradlew assembleRelease)
+cd tests/appium-e2e && npm install && npm run appium:driver && npm test
+```
+
+Détails (capabilities, sélecteurs RN→Appium, CI émulateur) :
+[`tests/appium-e2e/README.md`](./tests/appium-e2e).
+
+## 🪄 Maestro — le 3ᵉ outil mobile, déclaratif
+
+La même app RN est aussi couverte par **Maestro** : des **flows YAML
+déclaratifs** (aucun code de test, zéro dépendance npm), en parité de scénarios
+et de `testID` avec Detox et Appium.
+
+> Trois outils mobiles, **trois philosophies** sur les mêmes scénarios :
+> Detox (gray-box, instrumentation), Appium (WebDriver, protocole standard),
+> Maestro (déclaratif, attentes implicites anti-flaky). De quoi comparer
+> lisibilité, robustesse et coût de maintenance à périmètre constant.
+
+```bash
+# pré-requis : émulateur Android + APK release installé + CLI Maestro
+curl -Ls https://get.maestro.mobile.dev | bash
+cd tests/maestro-e2e && npm test
+```
+
+Détails (workspace, subflows, limitation Unicode d'`inputText`) :
+[`tests/maestro-e2e/README.md`](./tests/maestro-e2e).
 
 ## 🔐 Configuration & comptes (env)
 

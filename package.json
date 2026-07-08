@@ -2,14 +2,15 @@
   "name": "qa-automation-showcase",
   "version": "1.0.0",
   "private": true,
-  "description": "Vitrine QA Automation — E2E web (Playwright) + mobile React Native (Detox) avec CI",
+  "description": "Vitrine QA Automation — E2E web (Playwright + Selenium) + mobile React Native (Detox) avec CI",
   "workspaces": [
     "packages/*",
     "apps/api",
     "apps/web",
     "apps/notes",
     "tests/playwright",
-    "tests/notes-e2e"
+    "tests/notes-e2e",
+    "tests/selenium-e2e"
   ],
   "scripts": {
     "api:start": "npm run start --workspace apps/api",
@@ -24,6 +25,8 @@
     "test:e2e:bdd": "npm run test:bdd --workspace tests/playwright",
     "test:e2e:report": "npm run report --workspace tests/playwright",
     "test:notes": "npm run test --workspace tests/notes-e2e",
+    "test:selenium": "npm run test --workspace tests/selenium-e2e",
+    "test:selenium:report": "npm run test:report --workspace tests/selenium-e2e",
     "docs:living": "node tools/living-docs.mjs"
   },
   "engines": {

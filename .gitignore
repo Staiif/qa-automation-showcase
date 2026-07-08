@@ -2,11 +2,16 @@
 node_modules/
 .pnp
 .pnp.js
+# npm is the project standard (package-lock.json) — ignore alt package managers
+bun.lock
+bun.lockb
 
 # builds
 dist/
 build/
 apps/web/dist/
+.gradle/
+apps/mobile/android/build/
 
 # Playwright
 test-results/
@@ -19,6 +24,9 @@ blob-report/
 
 # generated reports / living documentation
 tests/playwright/reports/
+tests/selenium-e2e/reports/
+tests/appium-e2e/reports/
+tests/maestro-e2e/reports/
 apps/mobile/reports/
 docs/living-documentation.html
 

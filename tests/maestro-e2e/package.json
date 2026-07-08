@@ -1,0 +1,12 @@
+{
+  "name": "@taskly/maestro-e2e",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Suite Maestro (flows YAML déclaratifs) pour l'app React Native Taskly — mêmes testID et mêmes scénarios que Detox/Appium, zéro dépendance npm.",
+  "scripts": {
+    "test": "node run.mjs",
+    "test:auth": "node run.mjs --include-tags auth",
+    "test:tasks": "node run.mjs --include-tags tasks"
+  }
+}

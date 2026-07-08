@@ -1,0 +1,48 @@
+name: Selenium E2E (JS)
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - '**/*.md'
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  selenium:
+    name: Selenium WebDriver — Chrome (headless)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+
+      # Accounts come from the environment, never from source. In a real project
+      # these would be GitHub secrets; the demo uses the example file.
+      - name: Provision env
+        run: cp .env.example .env
+
+      - name: Install dependencies
+        run: npm ci
+
+      # ubuntu-latest ships google-chrome-stable; Selenium Manager (bundled with
+      # selenium-webdriver 4) resolves the matching chromedriver automatically.
+      # The suite boots the API + web preview itself (Mocha global fixtures).
+      - name: Run Selenium suite
+        run: npm run test:report --workspace tests/selenium-e2e
+        env:
+          CI: 'true'
+
+      - name: Upload report
+        if: failure()
+        uses: actions/upload-artifact@v5
+        with:
+          name: selenium-report
+          path: tests/selenium-e2e/reports/
+          if-no-files-found: ignore
+          retention-days: 14

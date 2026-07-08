@@ -1,0 +1,15 @@
+appId: com.taskly
+name: Connexion invalide — message d'erreur
+tags: [auth]
+---
+- launchApp:
+    clearState: true
+- runFlow:
+    file: ../common/login.yaml
+    env:
+      EMAIL: ${EMAIL}
+      PASSWORD: mauvais-mot-de-passe
+- assertVisible:
+    id: "login-error"
+- assertVisible:
+    text: ".*invalide.*"
