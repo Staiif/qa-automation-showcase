@@ -14,7 +14,6 @@ tags: [tasks]
 - tapOn:
     id: "new-task-input"
 - inputText: "Acheter du pain"
-- hideKeyboard
 - tapOn:
     id: "add-task-button"
 - assertVisible:

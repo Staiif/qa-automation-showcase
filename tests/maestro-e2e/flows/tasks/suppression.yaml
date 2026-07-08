@@ -16,7 +16,6 @@ tags: [tasks]
 - tapOn:
     id: "new-task-input"
 - inputText: "Nettoyer le bureau"
-- hideKeyboard
 - tapOn:
     id: "add-task-button"
 - assertVisible:
