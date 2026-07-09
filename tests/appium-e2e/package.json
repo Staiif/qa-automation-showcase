@@ -6,7 +6,7 @@
   "description": "Appium (WebDriver) mobile E2E suite for the Taskly React Native app — Screen Object parity with the Detox suite, same testIDs. Standalone (like apps/mobile), outside the npm workspaces.",
   "scripts": {
     "test": "wdio run ./wdio.conf.js",
-    "appium:driver": "appium driver install uiautomator2@3.10.0"
+    "appium:driver": "appium driver list --installed 2>&1 | grep -qi uiautomator2 || appium driver install uiautomator2@3.10.0"
   },
   "devDependencies": {
     "@wdio/appium-service": "^9.0.0",
