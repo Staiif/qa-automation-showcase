@@ -30,8 +30,12 @@ Native** Taskly, en **parité de Screen Object Model** avec la suite Detox : mê
    ```bash
    cd tests/appium-e2e
    npm install
-   npm run appium:driver   # appium driver install uiautomator2
+   npm run appium:driver   # installe le driver uiautomator2 si absent (idempotent)
    ```
+   > `appium:driver` est **idempotent** : `appium-uiautomator2-driver` est déjà
+   > une devDependency de la suite, donc Appium le détecte souvent comme
+   > `[installed (npm)]` après `npm install`. Le script saute alors l'install
+   > (sinon `appium driver install` échoue avec « already installed »).
 
 ## Lancer
 

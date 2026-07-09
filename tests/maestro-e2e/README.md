@@ -16,12 +16,19 @@ déclaratifs** — pas de code, pas de Screen Objects, pas de `node_modules`.
 |---|---|
 | Runner | [Maestro CLI](https://maestro.mobile.dev/) (2.x) |
 | Tests | Flows **YAML** (`flows/`), subflow partagé via `runFlow` |
-| Cible | App RN **release** (bundle Hermes embarqué) sur émulateur **Pixel_7_API_34** |
+| Cible | App RN **release** (bundle Hermes embarqué) sur émulateur Android, image **`aosp_atd`** (comme la CI) |
 | Rapport | JUnit (`reports/maestro.xml`) + artefacts de debug (screenshots) |
 
 ## Pré-requis
 
-1. **Android SDK + un émulateur** (l'AVD `Pixel_7_API_34`, le même que Detox/Appium).
+1. **Android SDK + un émulateur** sur l'image **`aosp_atd`** (celle de la CI).
+   ⚠️ Ne valide pas sur une image `google_apis` : son clavier masque le bug
+   `hideKeyboard` (voir § « Émulateur ATD (CI) »). Créer l'AVD ATD :
+   ```bash
+   sdkmanager "system-images;android-34;aosp_atd;x86_64"
+   avdmanager create avd -n Pixel_7_ATD_34 \
+     -k "system-images;android-34;aosp_atd;x86_64" -d pixel_7
+   ```
 2. **L'APK release** de l'app mobile, installé sur l'émulateur :
    ```bash
    (cd apps/mobile && npm install && cd android && ./gradlew assembleRelease)
