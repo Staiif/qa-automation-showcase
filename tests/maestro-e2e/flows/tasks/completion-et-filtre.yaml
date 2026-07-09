@@ -14,7 +14,6 @@ tags: [tasks]
 - tapOn:
     id: "new-task-input"
 - inputText: "Faire les courses"
-- hideKeyboard
 - tapOn:
     id: "add-task-button"
 - tapOn:

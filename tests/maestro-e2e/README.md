@@ -86,6 +86,21 @@ accents. Le flow de suppression utilise donc un titre sans accents
 l'app (« 1 tâche à faire », « Terminées »…) fonctionnent, elles, parfaitement :
 la limite ne concerne que la **saisie clavier**.
 
+## Émulateur ATD (CI) : pas de `hideKeyboard`
+
+La CI tourne sur l'image **`aosp_atd`** (Automated Test Device, allégée pour la
+vitesse) — la même que Detox/Appium. Cette image **n'embarque aucun clavier
+logiciel** (`adb shell ime list -s` renvoie vide). Or `hideKeyboard` de Maestro
+émet un **Back** : sans clavier à masquer, ce Back remonte à l'Activity et
+**ferme l'app**. Résultat : tout le contenu RN disparaît et l'étape suivante
+échoue (`Element not found: login-submit`).
+
+Les flows **n'utilisent donc pas `hideKeyboard`** — inutile de toute façon,
+puisqu'il n'y a pas de clavier pour masquer les boutons. Piège sournois : sur
+une image **`google_apis`** (avec clavier), `hideKeyboard` ne fait que masquer
+le clavier et les tests passent — d'où l'importance de valider en local sur un
+AVD **`aosp_atd`** (identique à la CI) et pas seulement `google_apis`.
+
 ## Variables d'environnement
 
 | Variable | Rôle | Défaut |

@@ -5,9 +5,10 @@ appId: com.taskly
 - tapOn:
     id: "login-email"
 - inputText: ${EMAIL}
+# NB : pas de `hideKeyboard` — il envoie un Back, et sur l'image CI `aosp_atd`
+# (sans clavier logiciel) ce Back ferme l'app. Voir README § « Émulateur ATD ».
 - tapOn:
     id: "login-password"
 - inputText: ${PASSWORD}
-- hideKeyboard
 - tapOn:
     id: "login-submit"
